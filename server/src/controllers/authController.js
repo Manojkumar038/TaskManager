@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); 
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 exports.register = async (req, res) => {
     try {
@@ -40,3 +42,4 @@ exports.login = async (req, res) => {
         res.status(400).json({message:"Server error.!"});
     }
 };
+
