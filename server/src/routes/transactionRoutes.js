@@ -8,10 +8,10 @@ const {
   getTransactionsByDate,
 } = require("../controllers/transactionController");
 
-router.post("/transactions", addTransaction);
-router.put("/transactions/:id", updateTransaction);
-router.delete("/transactions/:id", deleteTransaction);
-router.get("/transactions", getAllTransactions);
-router.get("/transactions/:date", getTransactionsByDate);
+router.post("/", addTransaction);
+router.put("/:id", updateTransaction);
+router.delete("/:id", deleteTransaction);
+router.get("/", getAllTransactions);
+router.get("/:date", getTransactionsByDate);
 
 module.exports = router;
