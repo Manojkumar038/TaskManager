@@ -2,17 +2,20 @@ const Transaction = require("../models/Transaction");
 
 exports.addTransaction = async (req, res) => {
   try {
-    const { date, amount, description, type, otherType, method } = req.body;
+    const { date, amount, description, category, type, otherType, method } = req.body;
 
-    if (!date || !amount || !description || !type || !method) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!date || !amount || !category || !type || !method) {
+      return res.status(400).json({ message: "All fields are required and description is optional" });
     }
 
-    if (type === "Other" && !otherType) {
+    let finalCategory = category;
+    if (category === "Other" && !otherType) {
       return res.status(400).json({ message: "Please provide 'otherType' value" });
+    } else if (category === "Other") {
+      finalCategory = otherType;
     }
 
-    const transaction = new Transaction({ date, amount, description, type, otherType, method });
+    const transaction = new Transaction({ date, amount, description, category: finalCategory, type, method });
     await transaction.save();
 
     res.status(201).json({ message: "Transaction added successfully", transaction });
@@ -25,6 +28,14 @@ exports.updateTransaction = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+
+    if (updates.category === "Other" && !updates.otherType) {
+      return res.status(400).json({ message: "Please provide 'otherType' value" });
+    }
+
+    if (updates.category === "Other") {
+      updates.category = updates.otherType;
+    }
 
     const transaction = await Transaction.findByIdAndUpdate(id, updates, { new: true });
 
