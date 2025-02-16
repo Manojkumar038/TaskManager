@@ -15,18 +15,13 @@ exports.forgot_password = async (req, res) => {
         User.resetTokenExpiry = Date.now() + 3600000;
         await user.save();
 
-        let testAccount = await nodemailer.createTestAccount();
-        console.log("Ethereal Email:", testAccount.user);
-        console.log("Ethereal Password:", testAccount.pass);
 
         const transporter = nodemailer.createTransport({
 
-            host: "smtp.ethereal.email",
-            port: 587,
-            secure: false, 
+            service: "gmail",
             auth: {
-                user: testAccount.user, 
-                pass: testAccount.pass  
+                user: process.env.EMAIL_USER, 
+                pass: process.env.EMAIL_PASS 
             }
         });
 
@@ -45,7 +40,3 @@ exports.forgot_password = async (req, res) => {
         res.status(500).json({ message: "Server error from authController.js - reset_password controller." });
     }
 }
-
-
-
-

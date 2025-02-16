@@ -1,8 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); 
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 
 exports.register = async (req, res) => {
     try {
@@ -14,7 +12,7 @@ exports.register = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        const newUser = new User({name, email, password});
+        const newUser = new User({name, email, hashedPassword});
         await newUser.save();
 
         res.status(200).json({message: "User registered successfully."});
@@ -39,7 +37,9 @@ exports.login = async (req, res) => {
 
         res.json({token, message: "Login Successful"});
     } catch (error) {
-        res.status(400).json({message:"Server error.!"});
+        res.status(400
+            
+        ).json({message:"Server error.!"});
     }
 };
 
