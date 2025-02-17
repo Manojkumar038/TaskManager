@@ -1,0 +1,7 @@
+/add-transaction  - To add a transaction to the list.
+/get-transactions - retrieve only one day transactions. filters - user will enter the date. default should be today's date.
+
+/get-all-transactions - return all the transactions ordered by date. filters - oldest first and newest first.
+
+/add-transactions - it will add the transactions data to the DB.
+
