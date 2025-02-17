@@ -20,8 +20,8 @@ exports.saveTransactions = async (req, res) => {
 
         res.status(200).json({ message: "Transactions saved successfully." });
     } catch (err) {
-        res.status(500).json({message: "Internal server error!"});
         console.log("Error occured in the saveTransaction.js file..." + err);
+        res.status(500).json({message: "Internal server error!"});
     }
 }
 

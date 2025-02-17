@@ -12,7 +12,7 @@ exports.deleteTransaction = async (req, res) => {
 
         if(!day) return res.status(400).json({message: "Invalid date or transId"});
 
-        res.status(200).jsong({message: "Transaction updated successfully."});
+        res.status(200).json({message: "Transaction deleted successfully."});
 
     }catch(err) {
         res.status(500).json({message: "Server Error occured."});
