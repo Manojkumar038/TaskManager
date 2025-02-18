@@ -1,26 +1,39 @@
 const Transaction = require("../models/Transaction");
 
-exports.addTransaction = async (req, res) => {
+exports.addTransactions = async (req, res) => {
   try {
-    const { date, amount, description, category, type, otherType, method } = req.body;
+    const transactions = req.body;
 
-    if (!date || !amount || !category || !type || !method) {
-      return res.status(400).json({ message: "All fields are required and description is optional" });
+    if (!Array.isArray(transactions) || transactions.length === 0) {
+      return res.status(400).json({ message: "Request body must be a non-empty array of transactions" });
     }
 
-    let finalCategory = category;
-    if (category === "Other" && !otherType) {
-      return res.status(400).json({ message: "Please provide 'otherType' value" });
-    } else if (category === "Other") {
-      finalCategory = otherType;
-    }
+    const transactionDocs = transactions.map(transactionData => {
+      const { date, amount, description, category, type, otherType, method } = transactionData;
 
-    const transaction = new Transaction({ date, amount, description, category: finalCategory, type, method });
-    await transaction.save();
+      if (!date || !amount || !category || !type || !method) {
+        throw new Error("All fields are required and description is optional");
+      }
 
-    res.status(201).json({ message: "Transaction added successfully", transaction });
+      let finalCategory = category;
+      if (category === "Other" && !otherType) {
+        throw new Error("Please provide 'otherType' value");
+      } else if (category === "Other") {
+        finalCategory = otherType;
+      }
+
+      return { date, amount, description, category: finalCategory, type, method };
+    });
+
+    const savedTransactions = await Transaction.insertMany(transactionDocs);
+
+    res.status(201).json({ message: "Transactions added successfully", transactions: savedTransactions });
   } catch (error) {
-    res.status(500).json({ message: "Server error while adding transaction", error });
+    if (error.message) {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Server error while adding transactions", error });
+    }
   }
 };
 
