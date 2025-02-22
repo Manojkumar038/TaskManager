@@ -13,7 +13,7 @@ exports.updateTransaction = async (req, res) => {
         if (indx === -1) return res.status(404).json({ message: "Transaction not found." });
 
         await Transactions.updateOne(
-            { date, "transactions._id": transId },
+            { date, "transactions._id" : transId },
             {
                 $set: {
                     "transactions.$.amount": amount,
