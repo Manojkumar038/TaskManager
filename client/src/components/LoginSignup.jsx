@@ -2,10 +2,41 @@ import React, { useState } from 'react';
 import './styleSheets/LoginSignup.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 
 const LoginSignup = () => {
     const [toggle, setToggle] = useState("Sign Up");
 
+    const [userData, setUserData] = useState({
+        name: "",
+        email: "",
+        password: "",
+    });
+
+    const handleChange = (e) => {
+        setUserData({...userData, [e.target.name]: e.target.value });
+    }
+
+    const handleSubmit = async () => {
+        console.log(userData);
+        try {
+            const url = toggle === "Login"? "http://localhost:5000/api/auth/login": "http://localhost:5000/api/auth/register";
+            //console.log("userData: ", userData);
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userData),
+            });
+            const data = await response.json(); 
+            console.log(data);
+            alert(data.message);
+        }catch (error) {
+            console.log(error);
+            alert("Something went wrong");
+        }
+    }
   return (
     <div className="container">
       <div className="header">
@@ -19,21 +50,21 @@ const LoginSignup = () => {
         ) : (
           <div className="input">
             <FontAwesomeIcon className="icon" icon={faUser} />
-            <input type="text" placeholder="Username" />
+            <input type="text" placeholder="Username" name='name' onChange={handleChange}/>
           </div>
         )}
 
         <div className="input">
           <FontAwesomeIcon className="icon" icon={faEnvelope} />
-          <input type="email" placeholder="Email " />
+          <input type="email" placeholder="Email" name='email' onChange={handleChange} />
         </div>
 
         <div className="input">
           <FontAwesomeIcon className="icon" icon={faLock} />
-          <input type="password" placeholder="Password" />
+          <input type="password" placeholder="Password" name='password' onChange={handleChange} />
         </div>
       </div>
-      
+
       {toggle === "Sign Up" ? (
         <div></div>
       ) : (
@@ -46,7 +77,11 @@ const LoginSignup = () => {
         <div
           className={toggle === "Login" ? "submit grey" : "submit"}
           onClick={() => {
-            setToggle("Sign Up");
+            if(toggle === "Login"){
+                setToggle("Sign Up");
+            }else{
+                handleSubmit();
+            }
           }}
         >
           SignUp
@@ -54,7 +89,11 @@ const LoginSignup = () => {
         <div
           className={toggle === "Sign Up" ? "submit grey" : "submit"}
           onClick={() => {
-            setToggle("Login");
+            if(toggle === "Sign Up"){
+                setToggle("Login");
+            }else{
+                handleSubmit();
+            }
           }}
         >
           Login
