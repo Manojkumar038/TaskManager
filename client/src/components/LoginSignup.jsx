@@ -20,21 +20,16 @@ const LoginSignup = () => {
     const handleSubmit = async () => {
         console.log(userData);
         try {
-            const url = toggle === "Login"? "http://localhost:5000/api/auth/login": "http://localhost:5000/api/auth/register";
-            //console.log("userData: ", userData);
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(userData),
-            });
-            const data = await response.json(); 
+            const url = toggle === "Login"
+            ? "http://localhost:5000/api/auth/login"
+            : "http://localhost:5000/api/auth/register";
+            const response = await axios.post(url, userData);
+            const data = response.data; 
             console.log(data);
             alert(data.message);
         }catch (error) {
-            console.log(error);
-            alert("Something went wrong");
+          console.error('Registration error: ', error);
+          alert("Something went wrong");
         }
     }
   return (
